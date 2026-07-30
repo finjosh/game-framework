@@ -56,7 +56,7 @@ void Engine::preLoop()
 
 void Engine::preEventHandling()
 {
-    EventHelper::Event::ThreadSafe::update();
+    EventHelper::Event::Synchronized::update();
     // updating the delta time var
     sf::Time deltaTime = m_deltaClock.restart();
     m_deltaTime = deltaTime.asSeconds();

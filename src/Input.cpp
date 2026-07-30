@@ -606,7 +606,7 @@ std::string Input::toString(sf::Keyboard::Key key)
 
 std::string Input::toString(sf::Keyboard::Scancode scanCode)
 {
-    std::string rtn = sf::Keyboard::getDescription(scanCode);
+    std::string rtn = sf::Keyboard::getDescription(scanCode).toAnsiString();
     if (rtn == "Unknown")
         rtn += " " + sf::Keyboard::getDescription(scanCode).toAnsiString();
     return rtn;

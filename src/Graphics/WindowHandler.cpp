@@ -27,7 +27,7 @@ void WindowHandler::initRenderWindowSettings(sf::VideoMode mode, const sf::Strin
     m_contextSettings = settings;
     m_style = style;
     m_state = state;
-    m_title = title;
+    m_title = title.toAnsiString();
 }
 
 void WindowHandler::createRenderWindow()
@@ -61,29 +61,32 @@ void WindowHandler::Display()
         DrawableManager::draw(m_renderWindow, m_contextSettings);
         DebugDraw::get().draw(WorldHandler::get(), m_renderWindow);
     }
-    for (auto camera: CameraManager::m_cameras)
+    else
     {
-        if (!camera->isDisplaying())
-            return;
+        for (auto camera: CameraManager::m_cameras)
+        {
+            if (!camera->isDisplaying())
+                return;
 
-        m_renderWindow->setView(camera->getCameraView()); // updates drawable objects view
-        /// TODO make a global and screen space GUI so that global UI does not need to change its view port all the time (try to find a way around this for global as its not efficient)
-        // CanvasManager::updateViewForCamera(camera); // updates the UI view // TODO uncomment this is a quick fix for frame drops when camera view is different from normal view (global gui does not work with this commented)
-        
-        camera->m_drawBackground((sf::RenderTarget*)m_renderWindow);
-        
-        camera->disableBlacklistedCanvases();
-        DrawableManager::draw(m_renderWindow, m_contextSettings);
-        camera->enableBlacklistedCanvases();
-        DebugDraw::get().draw(WorldHandler::get(), m_renderWindow);
-        
-        camera->m_drawOverlay((sf::RenderTarget*)m_renderWindow);
+            m_renderWindow->setView(camera->getCameraView()); // updates drawable objects view
+            /// TODO make a global and screen space GUI so that global UI does not need to change its view port all the time (try to find a way around this for global as its not efficient)
+            // CanvasManager::updateViewForCamera(camera); // updates the UI view // TODO uncomment this is a quick fix for frame drops when camera view is different from normal view (global gui does not work with this commented)
+            
+            camera->m_drawBackground((sf::RenderTarget*)m_renderWindow);
+            
+            camera->disableBlacklistedCanvases();
+            DrawableManager::draw(m_renderWindow, m_contextSettings);
+            camera->enableBlacklistedCanvases();
+            DebugDraw::get().draw(WorldHandler::get(), m_renderWindow);
+            
+            camera->m_drawOverlay((sf::RenderTarget*)m_renderWindow);
+        }
     }
 
     CanvasManager::drawOverlayGUI();
     m_renderWindow->display();
     m_renderWindow->clear();
-    if (auto mainCamera = CameraManager::getMainCamera())
+    if (Camera* mainCamera = CameraManager::getMainCamera())
         m_renderWindow->setView(mainCamera->getCameraView());
 }
 

@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <set>
+#include <climits>
 
 #include "box2d/types.h"
 

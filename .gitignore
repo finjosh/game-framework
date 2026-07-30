@@ -1,4 +1,7 @@
 bin
+.cache
+lib
 .VSCodeCounter
+compile_commands.json
 main.exe
 main

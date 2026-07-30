@@ -33,10 +33,13 @@ void DebugDraw::draw(WorldHandler& world, sf::RenderTarget* target)
     assert(target != nullptr && "Render target must be valid to draw!");
     m_renderTarget = target;
 
-    Vector2 center = CameraManager::getMainCamera()->getCameraView().getCenter();
-    Vector2 size = CameraManager::getMainCamera()->getCameraView().getSize();
+    if (Camera* mainCamera = CameraManager::getMainCamera())
+    {
+        Vector2 center = mainCamera->getCameraView().getCenter();
+        Vector2 size = mainCamera->getCameraView().getSize();
 
-    this->setDrawingBounds((center - size/2) / PIXELS_PER_METER, (center + size/2) / PIXELS_PER_METER);
+        this->setDrawingBounds((center - size/2) / PIXELS_PER_METER, (center + size/2) / PIXELS_PER_METER);
+    }
     b2World_Draw(world.getWorld(), &m_drawStruct);
 }
 

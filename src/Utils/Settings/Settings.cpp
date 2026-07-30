@@ -35,17 +35,17 @@ bool Settings::tryLoadFromFile(const std::string& fileName, const std::list<std:
     }   
 
     iniParser fileData(path);
-    fileData.setAutoSave(false);
+    fileData.setAutosave(false);
     if (!fileData.isOpen())
         return false;
-    if (!fileData.loadData())
+    if (!fileData.parseData())
         return true; // still returning true as the file was found (just skipping any attempt to load since there is no data)
 
     for (auto section: m_settings)
     {
         for (auto setting: section.second)
         {
-            const std::string* value = fileData.getValue(section.first, setting->getName());
+            const std::string* value = fileData.getSection(section.first)->getValue(setting->getName());
             if (value == nullptr)
             {
                 continue;
@@ -65,14 +65,13 @@ void Settings::save(const std::string& file) const
         fileData.createFile(file);
         fileData.setFile(file);
     }
-    fileData.overrideData();
     
     for (auto section: m_settings)
     {
-        fileData.addSection(section.first);
+        iniParser::SectionData& sectionData = fileData.insertSection(section.first).first;
         for (auto setting: section.second)
         {
-            fileData.setValue(section.first, setting->getName(), setting->getValueStr());
+            sectionData.setValue(setting->getName(), setting->getValueStr());
         }
     }
 
